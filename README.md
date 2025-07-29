@@ -1,41 +1,45 @@
-# Website
+# Recorder Documentation
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+This repository contains the source code for the official documentation of the [Recorder](https://github.com/TokenRollAI/recorder) project.
 
-## Installation
+The documentation website is built with [Docusaurus](https://docusaurus.io/).
+
+## Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/en/download/) (version 18.0 or above)
+- [pnpm](https://pnpm.io/installation)
+
+### Local Development
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/TokenRollAI/recorder-doc.git
+    cd recorder-doc
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    pnpm install
+    ```
+
+3.  **Start the development server:**
+    ```bash
+    pnpm start
+    ```
+    This will open the documentation website in your browser at `http://localhost:3000`. Most changes will be reflected live without needing to restart the server.
+
+## Building the Website
+
+To generate a static build of the website, run:
 
 ```bash
-yarn
+pnpm build
 ```
 
-## Local Development
+The static files will be placed in the `build` directory.
 
-```bash
-yarn start
-```
+## Contributing
 
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
-
-## Build
-
-```bash
-yarn build
-```
-
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
-
-## Deployment
-
-Using SSH:
-
-```bash
-USE_SSH=true yarn deploy
-```
-
-Not using SSH:
-
-```bash
-GIT_USER=<Your GitHub username> yarn deploy
-```
-
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+We welcome contributions to improve the documentation. Please feel free to open issues or submit pull requests.
