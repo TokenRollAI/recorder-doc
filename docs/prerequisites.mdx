@@ -1,0 +1,59 @@
+---
+sidebar_position: 2
+---
+
+# Prerequisites
+
+### Download uvx
+
+> Reference: https://docs.astral.sh/uv/getting-started/installation/
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs>
+<TabItem value="mac-linux" label="macOS & Linux">
+
+If you are using macOS and have Homebrew installed, you can use:
+```bash
+brew install uv
+```
+
+Alternatively, you can use `curl`:
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+If `curl` is not installed, you can use `wget`:
+
+```bash
+wget -qO- https://astral.sh/uv/install.sh | sh
+```
+
+</TabItem>
+<TabItem value="windows" label="Windows">
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+</TabItem>
+</Tabs>
+
+### Configure SPEC-mcp
+
+> Project URL: https://github.com/TokenRollAI/SPEC-mcp
+
+In the mcp configuration of your AI IDE, add the following:
+```json
+{
+    "mcpServers": {
+        "spec-mcp": {
+            "command": "uvx",
+            "args": [
+                "mcp-spec@latest"
+            ]
+        }
+    }
+}
+```

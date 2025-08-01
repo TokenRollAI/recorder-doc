@@ -1,0 +1,59 @@
+---
+sidebar_position: 2
+---
+
+# 前置
+
+### 下载uvx
+
+> 参考 https://docs.astral.sh/uv/getting-started/installation/
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs>
+<TabItem value="mac-linux" label="macOS & Linux">
+
+如果您使用的是 macOS 并且安装了 Homebrew，您可以使用：
+```bash
+brew install uv
+```
+
+或者，您也可以使用 `curl`:
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+如果没有安装`curl`的话, 可以使用`wget`
+
+```bash
+wget -qO- https://astral.sh/uv/install.sh | sh
+```
+
+</TabItem>
+<TabItem value="windows" label="Windows">
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+</TabItem>
+</Tabs>
+
+### 配置SPEC-mcp
+
+> 项目地址: https://github.com/TokenRollAI/SPEC-mcp
+
+在你使用的AI Ide的mcp配置中添加:
+```
+{
+    "mcpServers": {
+        "spec-mcp": {
+            "command": "uvx",
+            "args": [
+                "mcp-spec@latest"
+            ]
+        }
+    }
+}
+```

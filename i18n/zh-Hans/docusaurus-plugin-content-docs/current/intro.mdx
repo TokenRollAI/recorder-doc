@@ -1,133 +1,16 @@
 ---
 sidebar_position: 1
 ---
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
 # 快速上手
 
 让我们在 **5分钟内了解 recorder**。
 
-## 前置
+本指南将引导您完成 VS Code 和 JetBrains IDE 的 recorder 安装和使用过程。请按照侧边栏中的步骤开始操作。
 
-### 下载uvx
+基本使用步骤如下:
+1. 安装 uv
+2. 配置 SPEC-mcp
+3. 安装 recorder 插件
+4. 点击IDE下方的 `Start Recording` 开始使用
 
-> 参考 https://docs.astral.sh/uv/getting-started/installation/
-
-<Tabs>
-<TabItem value="mac-linux" label="macOS & Linux">
-
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-
-如果没有安装`curl`的话, 可以使用`wget`
-
-```bash
-wget -qO- https://astral.sh/uv/install.sh | sh
-```
-
-</TabItem>
-<TabItem value="windows" label="Windows">
-
-```powershell
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-```
-
-</TabItem>
-</Tabs>
-
-### 配置SPEC-mcp
-
-> 项目地址: https://github.com/TokenRollAI/SPEC-mcp
-
-在你使用的AI Ide的mcp配置中添加:
-```
-{
-    "mcpServers": {
-        "spec-mcp": {
-            "command": "uvx",
-            "args": [
-                "mcp-spec@latest"
-            ]
-        }
-    }
-}
-```
-
-
-
-### 下载recorder插件
-
-因为recorder使用了vscode的相当高的权限, 例如获取terminal的输入的命令以及命令的输出.
-
-所以目前无法在微软的插件商店上架, 目前在open vsx中可以下载.
-
-[下载地址](https://open-vsx.org/extension/TokenRollAI/recorder)
-或者使用Github的[release](https://github.com/TokenRollAI/recorder/releases/latest)
-
-如果您使用的是cursor/windsurf/trae, 默认使用的就是open-vsx
-
-如果无法搜索到, 可以通过手动的方式实现安装.
-
-#### 手动下载
-
-![DownloadVSX](/img/download_vsx.png)
-
-#### 手动安装
-
-![InstallVSX](/img/install_vsx.png)
-
-## 使用recorder
-
-### 注意!!!
-
-1. recorder依赖git的使用, 所以您必须保证所在的项目是通过git进行版本管理
-2. 如果想要得到最好的效果, 建议在一个全新的的,没有任何stash change的分支进行录制, 这样可以得到最干净的改动
-
-
-### 开始录制
-
-你绝对想不到使用recorder有多么的简单, 只需要点击左下角的 `Start Recording` 就够了.
-
-![StartRecording](/img/click_recording.png)
-
-### 编写代码
-
-在这里, 您只需要
-
-
-### 结束录制
-
-没有什么难度, 再点击一次`Stop`
-![StopRecording](/img/click_stop_recording.png)
-
-如果能够正常的完整录制, 那么在您的项目的根目录下会有一个 `opetion.json`
-![OperationJson](/img/operation_json_position.png)
-
-### 生成SOP-SPEC
-
-打开你使用的AI IDE的chat框, 然后选择一个有写权限的模式(例如Cursor/AugmentCode的Agent模式)
-
-然后输入: `call generate_operation_md`
-
-等待AI的执行, 最终会在`.spec`目录下, 生成一个对应的md文件
-
-参考:
-![SOPSpec](/img/sop_spec.png)
-
-## Just Do Once
-
-在完成了以上所有的操作之后, 恭喜你脱离苦海!
-
-后续所有的类似操作, 例如: 增加接口, 增加组件, 增加SQL等等, 您都可以直接要求LLM参考这个md文件.
-
-在常规的AI IDE中, 你只需要引用此文件(在Cursor/AugmentCode中, 您只需要`@`此文件), 然后说出您的需求, AI会参考您之前的操作, 进行高效的开发!
-
-我们建议的组织形式类似于:
-
-```
-read and follow the SOP in the md.
-
-now, i want to [your new requirements]
-```

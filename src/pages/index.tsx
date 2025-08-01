@@ -4,8 +4,8 @@ import Layout from '@theme/Layout';
 export default function Home(): ReactNode {
   return (
     <Layout
-      title="JUST DO ONCE!"
-      description="JUST DO ONCE!">
+      title="JUST DO ONCE"
+      description="JUST DO ONCE">
       <div
         style={{
           backgroundColor: 'black',
@@ -16,7 +16,7 @@ export default function Home(): ReactNode {
           textAlign: 'center',
         }}>
         <h1 style={{color: 'white', fontSize: '5rem', fontWeight: 'bold'}}>
-          JUST DO ONCE!
+          JUST DO ONCE
         </h1>
       </div>
     </Layout>

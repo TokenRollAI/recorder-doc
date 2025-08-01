@@ -1,0 +1,39 @@
+---
+sidebar_position: 2
+---
+
+# Usage
+
+### IMPORTANT!!!
+
+1.  recorder depends on Git. You must ensure your project is under Git version control.
+2.  For the best results, it is recommended to start recording on a clean branch with no stashed changes. This ensures the cleanest possible diff.
+
+### Start Recording
+
+You won't believe how simple it is to use recorder. Just click `Start Recording` in the bottom-left corner.
+
+![StartRecording](/img/click_recording.png)
+
+### Write Code
+
+At this stage, you just need to...
+
+### Stop Recording
+
+Just as easy, click `Stop` again.
+![StopRecording](/img/click_stop_recording.png)
+
+If the recording completes successfully, an `operation.json` file will be created in the root directory of your project.
+![OperationJson](/img/operation_json_position.png)
+
+### Generate SOP-SPEC
+
+Open the chat panel in your AI IDE and select a mode with write permissions (e.g., Cursor's or AugmentCode's Agent mode).
+
+Then, enter: `call generate_operation_md`
+
+Wait for the AI to execute. It will eventually generate a corresponding Markdown file in the `.spec` directory.
+
+Reference:
+![SOPSpec](/img/sop_spec.png)

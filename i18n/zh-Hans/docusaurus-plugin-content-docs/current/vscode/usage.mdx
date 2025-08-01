@@ -1,0 +1,41 @@
+---
+sidebar_position: 2
+---
+
+# 使用recorder
+
+### 注意!!!
+
+1. recorder依赖git的使用, 所以您必须保证所在的项目是通过git进行版本管理
+2. 如果想要得到最好的效果, 建议在一个全新的的,没有任何stash change的分支进行录制, 这样可以得到最干净的改动
+
+
+### 开始录制
+
+你绝对想不到使用recorder有多么的简单, 只需要点击左下角的 `Start Recording` 就够了.
+
+![StartRecording](/img/click_recording.png)
+
+### 编写代码
+
+在这里, 您只需要
+
+
+### 结束录制
+
+没有什么难度, 再点击一次`Stop`
+![StopRecording](/img/click_stop_recording.png)
+
+如果能够正常的完整录制, 那么在您的项目的根目录下会有一个 `opetion.json`
+![OperationJson](/img/operation_json_position.png)
+
+### 生成SOP-SPEC
+
+打开你使用的AI IDE的chat框, 然后选择一个有写权限的模式(例如Cursor/AugmentCode的Agent模式)
+
+然后输入: `call generate_operation_md`
+
+等待AI的执行, 最终会在`.spec`目录下, 生成一个对应的md文件
+
+参考:
+![SOPSpec](/img/sop_spec.png)

@@ -1,127 +1,16 @@
 ---
 sidebar_position: 1
 ---
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
 # Quick Start
 
 Let's learn about **recorder in less than 5 minutes**.
 
-## Prerequisites
+This guide will walk you through the process of setting up and using the recorder for both VS Code and JetBrains IDEs. Please follow the steps in the sidebar to get started.
 
-### Download uvx
+Here are the basic steps:
+1. Install uv
+2. Configure SPEC-mcp
+3. Install the recorder plugin for your IDE
+4. Click `Start Recording` at the bottom of your IDE to begin
 
-> Reference: https://docs.astral.sh/uv/getting-started/installation/
-
-<Tabs>
-<TabItem value="mac-linux" label="macOS & Linux">
-
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-
-If `curl` is not installed, you can use `wget`:
-
-```bash
-wget -qO- https://astral.sh/uv/install.sh | sh
-```
-
-</TabItem>
-<TabItem value="windows" label="Windows">
-
-```powershell
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-```
-
-</TabItem>
-</Tabs>
-
-### Configure SPEC-mcp
-
-> Project URL: https://github.com/TokenRollAI/SPEC-mcp
-
-In the mcp configuration of your AI IDE, add the following:
-```json
-{
-    "mcpServers": {
-        "spec-mcp": {
-            "command": "uvx",
-            "args": [
-                "mcp-spec@latest"
-            ]
-        }
-    }
-}
-```
-
-### Download the recorder Plugin
-
-Because recorder requires high-level permissions in VS Code, such as accessing terminal input commands and their output, it is currently not available on the official Microsoft Marketplace. You can download it from Open VSX.
-
-[Download Link](https://open-vsx.org/extension/TokenRollAI/recorder)
-or use Github's [release](https://github.com/TokenRollAI/recorder/releases/latest)
-
-If you are using Cursor, Wind-IDE, or Trae, you are likely using Open VSX by default.
-
-If you cannot find it via search, you can install it manually.
-
-#### Manual Download
-
-![DownloadVSX](/img/download_vsx.png)
-
-#### Manual Installation
-
-![InstallVSX](/img/install_vsx.png)
-
-## Using recorder
-
-### IMPORTANT!!!
-
-1.  recorder depends on Git. You must ensure your project is under Git version control.
-2.  For the best results, it is recommended to start recording on a clean branch with no stashed changes. This ensures the cleanest possible diff.
-
-### Start Recording
-
-You won't believe how simple it is to use recorder. Just click `Start Recording` in the bottom-left corner.
-
-![StartRecording](/img/click_recording.png)
-
-### Write Code
-
-At this stage, you just need to...
-
-### Stop Recording
-
-Just as easy, click `Stop` again.
-![StopRecording](/img/click_stop_recording.png)
-
-If the recording completes successfully, an `operation.json` file will be created in the root directory of your project.
-![OperationJson](/img/operation_json_position.png)
-
-### Generate SOP-SPEC
-
-Open the chat panel in your AI IDE and select a mode with write permissions (e.g., Cursor's or AugmentCode's Agent mode).
-
-Then, enter: `call generate_operation_md`
-
-Wait for the AI to execute. It will eventually generate a corresponding Markdown file in the `.spec` directory.
-
-Reference:
-![SOPSpec](/img/sop_spec.png)
-
-## Just Do Once
-
-After completing all the steps above, congratulations! You've escaped the grind!
-
-For all subsequent similar tasks, such as adding APIs, components, or SQL queries, you can now direct the LLM to reference this Markdown file.
-
-In a typical AI IDE, you just need to reference this file (e.g., by `@`-mentioning it in Cursor or AugmentCode), state your new requirements, and the AI will follow your previous operations for highly efficient development!
-
-We suggest a structure like this:
-
-```
-read and follow the SOP in the md.
-
-now, i want to [your new requirements]
-```
