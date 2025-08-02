@@ -1,0 +1,41 @@
+---
+sidebar_position: 2
+---
+
+# Usage
+
+### Attention!!!
+
+1. Recorder depends on Git, so you must ensure that your project is managed by Git.
+2. For the best results, it is recommended to record on a brand new branch with no stashed changes to get the cleanest diff.
+
+
+### Start Recording
+
+You won't believe how easy it is to use Recorder. Just click `Start Recording` in the bottom right corner.
+
+![StartRecording](/img/jetbrains_click_recording.png)
+
+### Write Code
+
+Here, you just need to write your code as you normally would. Recorder will record your actions without any intrusion.
+
+
+### Stop Recording
+
+It's not difficult, just click `Stop` again.
+![StopRecording](/img/jetbrains_click_stop_recording.png)
+
+If the recording is completed successfully, there will be an `operation.json` file in the root directory of your project.
+![OperationJson](/img/jetbrains_operation_json_position.png)
+
+### Generate SOP-SPEC
+
+Open the chat box of your AI IDE, and select a mode with write permissions (e.g., Agent mode in an AI-powered IDE like Cursor).
+
+Then enter: `call generate_operation_md and follow the instruction`
+
+Wait for the AI to execute, and it will eventually generate a corresponding md file in the `.spec` directory.
+
+Reference:
+![SOPSpec](/img/jetbrains_sop_spec.png)

@@ -1,16 +1,26 @@
 ---
 sidebar_position: 1
+title: Introduction
 ---
 
-# Quick Start
+**Our slogan: Just Do Once! Freeing humans from repetitive work!**
 
-Let's learn about **recorder in less than 5 minutes**.
+Recorder is a development tool designed to eliminate the repetitive "screw-turning" tasks in your daily workflow. Instead of manually creating new APIs, components, database tables, or boilerplate SQL, Recorder learns from you once and automates the process forever.
 
-This guide will walk you through the process of setting up and using the recorder for both VS Code and JetBrains IDEs. Please follow the steps in the sidebar to get started.
+### Core Concept
 
-Here are the basic steps:
-1. Install uv
-2. Configure SPEC-mcp
-3. Install the recorder plugin for your IDE
-4. Click `Start Recording` at the bottom of your IDE to begin
+The philosophy is to capture the pattern of a repetitive development task *one time*.
 
+-   **Record**: Start the recorder and perform a common task, like creating a new API endpoint in your framework.
+-   **Generate**: Recorder analyzes the steps you took—creating files, modifying code, running commands—and creates a reusable, parameterized template.
+-   **Automate**: The next time you need to do a similar task, you simply invoke the recorder with new parameters (e.g., a different model name), and it generates all the necessary boilerplate code and configuration for you.
+
+### How It Works
+
+1.  **Operation Recording**: The tool integrates with your IDE to capture file changes, terminal commands, and other actions.
+2.  **Structured Log (`operation.json`)**: Your actions are saved into a machine-readable `operation.json` log. This captures the "what" and "how" of the task.
+3.  **Code & SOP Generation**: Recorder processes the log to generate not just a step-by-step guide (SOP), but more importantly, the actual boilerplate code for your new API, component, or database migration.
+
+### Getting Started
+
+Ready to eliminate repetitive coding tasks? Head over to the **[Prerequisites](./prerequisites.mdx)** section to set up your environment and get started!
