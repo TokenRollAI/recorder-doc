@@ -1,0 +1,186 @@
+---
+title: Go-Zero New API Demo
+sidebar_label: Go-Zero New API
+---
+
+This is a demonstration of adding a new API in a go-zero project.
+
+
+### Generated SOP
+
+```markdown
+# SOP Template: Adding a New API Endpoint in a go-zero Framework
+
+## Overview
+This Standard Operating Procedure (SOP) outlines the standardized, framework-driven process for adding a new API endpoint to a Go-based microservice built with `go-zero`. This workflow leverages a Domain-Specific Language (DSL) defined in an `.api` file as the single source of truth for the API's contract.
+
+The core principle is to first define the endpoint's route, method, and data structures in the DSL file. Subsequently, a code generation tool (`goctl`) is used to automatically scaffold the necessary handler, logic, and type files. This approach ensures consistency, reduces boilerplate, and allows the developer to focus on implementing the core business logic.
+
+## Step-by-Step Guide
+
+### Step 1: Define the New API Endpoint in the DSL
+*   **Description:** The first step is to declare the new endpoint in the service's `.api` file. This file acts as the blueprint for the API, defining its structure, routes, and data payloads. By adding a new entry here, you are specifying the contract for the endpoint.
+*   **Operation Details:**
+    *   Locate the relevant `.api` file for the service you are modifying (e.g., `api/[ServiceName]/dsl/[feature].api`).
+    *   Add the new route definition within the `service` block, specifying the handler name, HTTP method, path, request payload, and response payload.
+
+    \```diff
+    // Example diff for adding a new endpoint
+    // File: api/[ServiceName]/dsl/operation.api
+
+    service backend-api {
+        // ... existing endpoints
+        @handler ExistingHandler
+        post /existing_endpoint (ExistingReq) returns (EmptyResp)
+
+    +   @handler [NewEndpointHandlerName]
+    +   [HTTPMethod] /[new-endpoint-path] ([RequestType]) returns ([ResponseType])
+    }
+    \```
+
+    *   **Log Analysis:** The log shows a `FILE_DIFF` in `api/web/dsl/operation.api`, adding a `post /update_name_v2` endpoint. This action is the catalyst for the entire workflow.
+
+### Step 2: Generate Boilerplate Code
+*   **Description:** After updating the API definition, use the project's built-in code generation script. This script invokes the `go-zero` command-line tool, `goctl`, which reads the modified `.api` file and generates the necessary Go files for the new endpoint. This includes the handler (request/response parsing) and the logic (business logic container) files.
+*   **Operation Details:**
+    *   Run the make command or script responsible for API code generation. This command often requires specifying the target service.
+    *   The tool will create new `_handler.go` and `_logic.go` files for the new endpoint and regenerate the `types.go` file with any new request/response structs. Existing, modified files will be skipped to prevent overwriting custom logic.
+
+    \```bash
+    # Example command from the log
+    make api SERVICE_NAME=[service-name]
+    \```
+
+    *   **Log Analysis:** The `make api SERVICE_NAME=web` command triggered the creation of `update_name_v2_handler.go` and `update_name_v2_logic.go`. The extensive list of "exists, ignored generation" messages confirms that the tool correctly avoids overwriting existing work.
+
+### Step 3: Implement the Business Logic
+*   **Description:** With the boilerplate in place, the final step is to implement the core business logic. Navigate to the newly created logic file (e.g., `.../logic/operation/[NewEndpointHandlerName]_logic.go`). This file contains a struct and a method stubbed out, ready for you to add the specific logic required to fulfill the API's contract.
+*   **Operation Details:**
+    *   Open the generated `_logic.go` file.
+    *   Implement your logic within the main function (e.g., `UpdateNameV2`). This typically involves validating input, interacting with other services or databases via the `svcCtx`, and returning a response or an error.
+
+    \```go
+    // Example of a newly generated, unimplemented logic file
+    // File: api/[ServiceName]/internal/logic/operation/[NewEndpointHandlerName]_logic.go
+
+    package operation
+
+    import (
+        "context"
+
+        "github.com/[org]/[project]/api/[ServiceName]/internal/svc"
+        "github.com/[org]/[project]/api/[ServiceName]/internal/types"
+
+        "github.com/zeromicro/go-zero/core/logx"
+    )
+
+    type [NewEndpointHandlerName]Logic struct {
+        logx.Logger
+        ctx    context.Context
+        svcCtx *svc.ServiceContext
+    }
+
+    // ... constructor ...
+
+    func (l *[NewEndpointHandlerName]Logic) [NewEndpointHandlerName](req *types.[RequestType]) (resp *types.[ResponseType], err error) {
+        // todo: add your logic here and delete this line
+
+        // Example:
+        // err = l.svcCtx.MyModel.UpdateName(l.ctx, req.ID, req.NewName)
+        // return &types.EmptyResp{}, err
+
+        return
+    }
+    \```
+    *   **Log Analysis:** The final log entry shows the content of the newly created `update_name_v2_logic.go`, which contains the `// todo: add your logic here` placeholder, clearly indicating this is the next required action.
+
+## Key Analysis & Summary
+
+### Key File Archetypes
+*   **API DSL (`*.api`):** The declarative source of truth for an API service. It defines all routes, their methods, and their request/response data structures. All code generation stems from this file.
+*   **Handler (`.../[feature]/..._handler.go`):** The thin layer responsible for handling HTTP requests. Its primary job is to unmarshal the request into a Go struct and pass it to the corresponding Logic component. It is almost entirely auto-generated.
+*   **Logic (`.../[feature]/..._logic.go`):** The heart of the endpoint. This file contains the actual business logic. It receives the request struct from the handler and uses the `ServiceContext` to interact with databases, caches, or other downstream services.
+*   **Types (`.../types/types.go`):** An auto-generated file containing the Go struct definitions for all request and response objects defined in the `.api` file.
+*   **Makefile / Generation Script (`Makefile`, `scripts/*.ps1`):** An automation wrapper around `goctl` commands to simplify and standardize the code generation process across the project.
+
+### File Relationship Patterns
+*   The `.api` file is the **root dependency**.
+*   A change in the `.api` file necessitates running the code generator (`make api`).
+*   The generator creates a `Handler` and a `Logic` file for each new `@handler` entry in the `.api` file.
+*   The `Handler` has a direct, one-to-one dependency on its corresponding `Logic` file.
+*   Both `Handler` and `Logic` depend on the structs defined in the `Types` file.
+
+### Investigative Cues & Key Variables
+*   **`goctl`:** This is the core engine of the `go-zero` framework. While abstracted by a `Makefile` in this log, understanding its existence is key to troubleshooting generation issues.
+*   **`SERVICE_NAME`:** This variable in the `make api` command is crucial. It directs the code generator to the correct service directory within a multi-service monorepo.
+*   **`@handler`:** This annotation in the `.api` file is the specific keyword that `goctl` uses to identify a new endpoint that requires scaffolding.
+
+### Primary vs. Secondary Changes
+*   **Primary Changes (Core Logic):**
+    *   The addition of the new endpoint definition in the `.api` file.
+    *   The manual implementation of business logic in the `..._logic.go` file.
+*   **Secondary Changes (Boilerplate/Generated):**
+    *   The auto-generated `..._handler.go` file.
+    *   The auto-generated/updated `.../types/types.go` file. These files are artifacts of the workflow and should rarely be modified by hand.
+```
+
+
+### operation.json
+
+```json
+
+
+### operation.json
+
+```json
+[
+  {
+    "timestamp": 1753801592455,
+    "type": "COMMAND",
+    "command": "ls",
+    "output": "\u0007\r\n    Directory: C:\\Users\\15524\\code\\vast\\tripo-studioMode                 LastWriteTime         Length Name\r\n----                 -------------         ------ ----\r\nd----           2025/4/26    14:15X.codelf\r\nd----           2025/4/26    14:15X.github\r\nd----           2025/7/29    23:04X.idea\r\nd----           2025/4/26    14:15X.vscode\r\nd----           2025/4/20    12:15Xapi\r\nd----           2025/5/13    23:29Xpkg\r\nd----           2025/4/20    12:15Xrpc\r\nd----           2025/4/20    12:15scripts\r\n-a---            2025/5/8    20:11            528 .gitignore\r\n-a---           2025/4/20    12:15           3604 .windsurfrules\r\n-a---           2025/4/20    12:15           2466 docker-compose.yml\r\n-a---            2025/6/9    10:29           9000 go.mod\r\n-a---            2025/6/9    10:29         222105 go.sum\r\n-a---           2025/4/20    12:15           4265 goctl.yaml\r\n-a---           2025/6/11    15:44           3275 Makefile\r\n-a---           2025/4/26    14:15           1275 README.md\r\n\n"
+  },
+  {
+    "timestamp": 1753801623241,
+    "type": "FILE_DIFF",
+    "path": "api\\web\\dsl\\operation.api",
+    "data": "diff --git a/api/web/dsl/operation.api b/api/web/dsl/operation.api\nindex 0a8b596..d22a86f 100644\n--- a/api/web/dsl/operation.api\n+++ b/api/web/dsl/operation.api\n@@ -397,4 +397,7 @@ service backend-api {\n \t// 更新名字\n \t@handler UpdateName\n \tpost /update_name (UpdateNameReq) returns (EmptyResp)\n+\n+\t@handler UpdateNameV2\n+\tpost /update_name_v2 (UpdateNameReq) returns (EmptyResp)\n }\n\\ No newline at end of file\n"
+  },
+  {
+    "timestamp": 1753801658711,
+    "type": "FILE_DELETE",
+    "path": "api\\web\\internal\\types\\assets.go",
+    "data": ""
+  },
+  {
+    "timestamp": 1753801658824,
+    "type": "FILE_CREATE",
+    "path": "api\\web\\internal\\handler\\operation\\update_name_v2_handler.go",
+    "data": ""
+  },
+  {
+    "timestamp": 1753801658824,
+    "type": "FILE_CREATE",
+    "path": "api\\web\\internal\\logic\\operation\\update_name_v2_logic.go",
+    "data": ""
+  },
+  {
+    "timestamp": 1753801658824,
+    "type": "FILE_CREATE",
+    "path": "api\\web\\internal\\types\\assets.go",
+    "data": ""
+  },
+  {
+    "timestamp": 1753801659061,
+    "type": "COMMAND",
+    "command": "make api SERVICE_NAME=web",
+    "output": "\u0007powershell -ExecutionPolicy Bypass -Command \"& { ./scripts/api_service.ps1 -ServiceName 'web' \r\n -ApiName 'main' }\"\r\nGenerating code using ./api/web/dsl/main.api\r\nCloning into 'C:\\Users\\15524\\.goctl\\.git\\go-zero-template'...\r\nremote: Enumerating objects: 74, done.\r\nremote: Counting objects: 100% (74/74), done.\r\nremote: Compressing objects:  33% (21/63)\rremote: Compressing objects:  34% (22/63)\rremote: Compressing objects: 100% (63/63), done.\r\nremote: Total 74 (delta 10), reused 71 (delta 7), pack-reused 0 (from 0)\r\nReceiving objects: 100% (74/74), 16.20 KiB | 3.24 MiB/s, done.\r\nResolving deltas: 100% (10/10), done.\r\napi/web/etc/backend-api.yaml exists, ignored generation\r\napi/web/internal/config/config.go exists, ignored generation\r\napi/web/backend.go exists, ignored generation\r\napi/web/internal/svc/service_context.go exists, ignored generation\r\napi/web/internal/handler/get_collection_info_handler.go exists, ignored generation\r\napi/web/internal/handler/get_operator_detail_handler.go exists, ignored generation\r\napi/web/internal/handler/batch_progress_handler.go exists, ignored generation\r\napi/web/internal/handler/get_progress_handler.go exists, ignored generation\r\napi/web/internal/handler/get_sub_operator_info_handler.go exists, ignored generation\r\napi/web/internal/handler/check_auth_handler.go exists, ignored generation\r\napi/web/internal/handler/list_txn_records_handler.go exists, ignored generation\r\napi/web/internal/handler/get_project_detail_handler.go exists, ignored generation\r\napi/web/internal/handler/get_project_info_handler.go exists, ignored generation\r\napi/web/internal/handler/migrate_task_handler.go exists, ignored generation\r\napi/web/internal/handler/assets/get_assets_list_handler.go exists, ignored generation\r\napi/web/internal/handler/assets/delete_assets_handler.go exists, ignored generation\r\napi/web/internal/handler/gallery/collect_gallery_handler.go exists, ignored generation        \r\napi/web/internal/handler/gallery/uncollect_gallery_handler.go exists, ignored generation      \r\napi/web/internal/handler/gallery/like_gallery_handler.go exists, ignored generation\r\napi/web/internal/handler/gallery/unlike_gallery_handler.go exists, ignored generation\r\napi/web/internal/handler/gallery/get_gallery_list_handler.go exists, ignored generation       \r\napi/web/internal/handler/message/get_latest_message_handler.go exists, ignored generation     \r\napi/web/internal/handler/message/get_message_by_offset_handler.go exists, ignored generation  \r\napi/web/internal/handler/message/mark_as_read_handler.go exists, ignored generation\r\napi/web/internal/handler/operation/get_re_texture_image_handler.go exists, ignored generation \r\napi/web/internal/handler/operation/get_all_texture_images_handler.go exists, ignored generatio\r\non\r\napi/web/internal/handler/operation/create_ai_completion_handler.go exists, ignored generation \r\napi/web/internal/handler/operation/create_ai_segmentation_handler.go exists, ignored generatio\r\non\r\napi/web/internal/handler/operation/apply_texture_handler.go exists, ignored generation        \r\napi/web/internal/handler/operation/create_batch_image_to_model_handler.go exists, ignored gene\r\neration\r\napi/web/internal/handler/operation/download_operation_out_put_handler.go exists, ignored gener\r\nration\r\napi/web/internal/handler/operation/create_export_model_handler.go exists, ignored generation  \r\napi/web/internal/handler/operation/create_image_to_model_handler.go exists, ignored generation\r\napi/web/internal/handler/operation/create_meta_modification_handler.go exists, ignored generat\r\ntion\r\napi/web/internal/handler/operation/create_modification_handler.go exists, ignored generation  \r\napi/web/internal/handler/operation/create_multiview_to_model_handler.go exists, ignored genera\r\nation\r\napi/web/internal/handler/operation/get_operation_detail_handler.go exists, ignored generation \r\napi/web/internal/handler/operation/pbr_generator_handler.go exists, ignored generation        \r\napi/web/internal/handler/operation/create_pre_rig_check_handler.go exists, ignored generation \r\napi/web/internal/handler/operation/re_mesh_handler.go exists, ignored generation\r\napi/web/internal/handler/operation/restore_handler.go exists, ignored generation\r\napi/web/internal/handler/operation/create_retarget_model_handler.go exists, ignored generation\r\napi/web/internal/handler/operation/re_texture_handler.go exists, ignored generation\r\napi/web/internal/handler/operation/create_rigging_model_handler.go exists, ignored generation \r\napi/web/internal/handler/operation/save_as_new_handler.go exists, ignored generation\r\napi/web/internal/handler/operation/stylize_handler.go exists, ignored generation\r\napi/web/internal/handler/operation/create_text_to_image_handler.go exists, ignored generation \r\napi/web/internal/handler/operation/get_text_to_image_handler.go exists, ignored generation    \r\napi/web/internal/handler/operation/create_texture_model_handler.go exists, ignored generation \r\napi/web/internal/handler/operation/update_name_handler.go exists, ignored generation\r\napi/web/internal/logic/get_collection_info_logic.go exists, ignored generation\r\napi/web/internal/logic/get_operator_detail_logic.go exists, ignored generation\r\napi/web/internal/logic/batch_progress_logic.go exists, ignored generation\r\napi/web/internal/logic/get_progress_logic.go exists, ignored generation\r\napi/web/internal/logic/get_sub_operator_info_logic.go exists, ignored generation\r\napi/web/internal/logic/check_auth_logic.go exists, ignored generation\r\napi/web/internal/logic/list_txn_records_logic.go exists, ignored generation\r\napi/web/internal/logic/get_project_detail_logic.go exists, ignored generation\r\napi/web/internal/logic/get_project_info_logic.go exists, ignored generation\r\napi/web/internal/logic/migrate_task_logic.go exists, ignored generation\r\napi/web/internal/logic/assets/get_assets_list_logic.go exists, ignored generation\r\napi/web/internal/logic/assets/delete_assets_logic.go exists, ignored generation\r\napi/web/internal/logic/gallery/collect_gallery_logic.go exists, ignored generation\r\napi/web/internal/logic/gallery/uncollect_gallery_logic.go exists, ignored generation\r\napi/web/internal/logic/gallery/like_gallery_logic.go exists, ignored generation\r\napi/web/internal/logic/gallery/unlike_gallery_logic.go exists, ignored generation\r\napi/web/internal/logic/gallery/get_gallery_list_logic.go exists, ignored generation\r\napi/web/internal/logic/message/get_latest_message_logic.go exists, ignored generation\r\napi/web/internal/logic/message/get_message_by_offset_logic.go exists, ignored generation      \r\napi/web/internal/logic/message/mark_as_read_logic.go exists, ignored generation\r\napi/web/internal/logic/operation/get_re_texture_image_logic.go exists, ignored generation     \r\napi/web/internal/logic/operation/get_all_texture_images_logic.go exists, ignored generation   \r\napi/web/internal/logic/operation/create_ai_completion_logic.go exists, ignored generation     \r\napi/web/internal/logic/operation/create_ai_segmentation_logic.go exists, ignored generation   \r\napi/web/internal/logic/operation/apply_texture_logic.go exists, ignored generation\r\napi/web/internal/logic/operation/create_batch_image_to_model_logic.go exists, ignored generati\r\nion\r\napi/web/internal/logic/operation/download_operation_out_put_logic.go exists, ignored generatio\r\non\r\napi/web/internal/logic/operation/create_export_model_logic.go exists, ignored generation      \r\napi/web/internal/logic/operation/create_image_to_model_logic.go exists, ignored generation    \r\napi/web/internal/logic/operation/create_meta_modification_logic.go exists, ignored generation \r\napi/web/internal/logic/operation/create_modification_logic.go exists, ignored generation      \r\napi/web/internal/logic/operation/create_multiview_to_model_logic.go exists, ignored generation\r\napi/web/internal/logic/operation/get_operation_detail_logic.go exists, ignored generation     \r\napi/web/internal/logic/operation/pbr_generator_logic.go exists, ignored generation\r\napi/web/internal/logic/operation/create_pre_rig_check_logic.go exists, ignored generation     \r\napi/web/internal/logic/operation/re_mesh_logic.go exists, ignored generation\r\napi/web/internal/logic/operation/restore_logic.go exists, ignored generation\r\napi/web/internal/logic/operation/create_retarget_model_logic.go exists, ignored generation\r\napi/web/internal/logic/operation/re_texture_logic.go exists, ignored generation\r\napi/web/internal/logic/operation/create_rigging_model_logic.go exists, ignored generation     \r\napi/web/internal/logic/operation/save_as_new_logic.go exists, ignored generation\r\napi/web/internal/logic/operation/stylize_logic.go exists, ignored generation\r\napi/web/internal/logic/operation/create_text_to_image_logic.go exists, ignored generation     \r\napi/web/internal/logic/operation/get_text_to_image_logic.go exists, ignored generation        \r\napi/web/internal/logic/operation/create_texture_model_logic.go exists, ignored generation     \r\napi/web/internal/logic/operation/update_name_logic.go exists, ignored generation\r\napi/web/internal/middleware/visitorauthing_middleware.go exists, ignored generation\r\napi/web/internal/middleware/authing_middleware.go exists, ignored generation\r\napi/web/internal/middleware/billing_middleware.go exists, ignored generation\r\nDone.\r\n"
+  },
+  {
+    "timestamp": 1753801671256,
+    "type": "FILE_CONTENT",
+    "path": "api\\web\\internal\\logic\\operation\\update_name_v2_logic.go",
+    "data": "package operation\n\nimport (\n\t\"context\"\n\n\t\"github.com/vast-enterprise/tripo-studio/api/web/internal/svc\"\n\t\"github.com/vast-enterprise/tripo-studio/api/web/internal/types\"\n\n\t\"github.com/zeromicro/go-zero/core/logx\"\n)\n\ntype UpdateNameV2Logic struct {\n\tlogx.Logger\n\tctx    context.Context\n\tsvcCtx *svc.ServiceContext\n}\n\nfunc NewUpdateNameV2Logic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateNameV2Logic {\n\treturn &UpdateNameV2Logic{\n\t\tLogger: logx.WithContext(ctx),\n\t\tctx:    ctx,\n\t\tsvcCtx: svcCtx,\n\t}\n}\n\nfunc (l *UpdateNameV2Logic) UpdateNameV2(req *types.UpdateNameReq) (resp *types.EmptyResp, err error) {\n\t// todo: add your logic here and delete this line\n\t// set logic here\n\treturn\n}\n"
+  }
+]
+```
